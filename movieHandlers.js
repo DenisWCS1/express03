@@ -83,6 +83,26 @@ const postUser = (req, res) => {
       res.status(500).send(`error ici -> ${err}`);
     });
 };
+
+const updateMovie = (req, res) => {
+  const id = parseInt(req.params.id);
+  const { title, director, year, color, duration } = req.body;
+  database
+    .query(
+      "update movies set title = ?,director = ?, year = ?, color =?, duration = ? where id = ?",
+      [title, director, year, color, duration, id]
+    )
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.status(404).send(`Not Found ${result}${req.body}`);
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(`Send error ${err}`);
+    });
+};
 module.exports = {
   getMovies,
   getMovieById,
@@ -90,4 +110,5 @@ module.exports = {
   getUsers,
   getUserById,
   postUser,
+  updateMovie,
 };
