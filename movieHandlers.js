@@ -1,3 +1,4 @@
+const { restart } = require("nodemon");
 const database = require("./database");
 
 const getMovies = (req, res) => {
@@ -103,6 +104,22 @@ const updateMovie = (req, res) => {
       res.status(500).send(`Send error ${err}`);
     });
 };
+const deleteMovie = (req, res) => {
+  const id = Number(req.params.id);
+
+  database
+    .query("delete from movies where id = ?", [id])
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.status(404).send("Not Found");
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      res.status(500).send("Error deleting the movie");
+    });
+};
 module.exports = {
   getMovies,
   getMovieById,
@@ -111,4 +128,5 @@ module.exports = {
   getUserById,
   postUser,
   updateMovie,
+  deleteMovie,
 };
